@@ -35,7 +35,7 @@ I create this script to help automate host and port discovery during the recon p
 Obviously you would substitute the "desired_nmap_script.sh" with the actual script version you want.
 
 ## Versions:
-There are two versions of the script, the little raven an the tibetan raven (credit to Rita Pang for the naming).
+There are two versions of the script, the little raven an the tibetan raven (credit to *Rita Pang* for the naming)of these scripts. Fun fact, a flock of ravens is called an "unkindness" or "conmspiracy", more credit to Rita for teaching me this. 
 ```
 
           :================:
