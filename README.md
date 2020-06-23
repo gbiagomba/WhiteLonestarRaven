@@ -52,7 +52,7 @@ There are two versions of the script, the little raven an the tibetan raven (cre
      --------------------------------- 8
 ```
 
-### little Raven
+### Little Raven
 Named after one of the smallest ravens in its species, this is a lightweight version of its counterpart. It was designed to perform a pingsweep and quick portknock scan of a target network. It achieves this by first performing a comprehensive pingsweep across ICMP, TCP and UDP. Then it performs a portknock of the top one-hundred (100) most commonly used TCP/UDP ports. Lastly, the results are dumped into a folder and that folder is later compressesed. 
 
 ### Tibetan Raven
