@@ -80,8 +80,8 @@ echo "--------------------------------------------------"
 echo "Nmap Pingsweep -  TCP SYN/ACK, UDP and SCTP"
 echo "--------------------------------------------------"
 nmap -R --reason --resolve-all -sn -PS "21,22,23,25,53,80,88,110,111,135,139,443,445,8080" -iL $wrkpth/Nmap/$prj_name-live-$TodaysDAY-$TodaysYEAR -oA $wrkpth/Nmap/$prj_name-pingsweepTCP-$TodaysDAY-$TodaysYEAR
-nmap -R --reason --resolve-all -sn -PU "42,53,67-68,88,111,123,135,137,138,161,500,3389,5355"-iL $wrkpth/Nmap/$prj_name-live-$TodaysDAY-$TodaysYEAR -oA $wrkpth/Nmap/$prj_name-pingsweepUDP-$TodaysDAY-$TodaysYEAR
-nmap -R --reason --resolve-all -sn -PA"21-23,25,53,80,88,110,111,135,139,443,445,3389,8080" -iL $wrkpth/Nmap/$prj_name-live-$TodaysDAY-$TodaysYEAR -oA $wrkpth/Nmap/$prj_name-pingsweepTCP-ACK-$TodaysDAY-$TodaysYEAR
+nmap -R --reason --resolve-all -sn -PU "42,53,67-68,88,111,123,135,137,138,161,500,3389,5355" -iL $wrkpth/Nmap/$prj_name-live-$TodaysDAY-$TodaysYEAR -oA $wrkpth/Nmap/$prj_name-pingsweepUDP-$TodaysDAY-$TodaysYEAR
+nmap -R --reason --resolve-all -sn -PA "21-23,25,53,80,88,110,111,135,139,443,445,3389,8080" -iL $wrkpth/Nmap/$prj_name-live-$TodaysDAY-$TodaysYEAR -oA $wrkpth/Nmap/$prj_name-pingsweepTCP-ACK-$TodaysDAY-$TodaysYEAR
 nmap -R --reason --resolve-all -sn -PY "22,80,179,5060" -iL $wrkpth/Nmap/$prj_name-pingresponse-$TodaysDAY-$TodaysYEAR -oA $wrkpth/Nmap/$prj_name-pingsweepSCTP-$TodaysDAY-$TodaysYEAR
 cat `ls $wrkpth/Nmap/$prj_name | grep pingsweep | grep $TodaysDAY-$TodaysYEAR | grep gnmap` | grep Up | cut -d ' ' -f 2 >> $wrkpth/Nmap/$prj_name-live-$TodaysDAY-$TodaysYEAR
 
