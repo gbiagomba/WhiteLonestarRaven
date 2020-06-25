@@ -56,30 +56,28 @@ if [ -z $prj_name ]; then
 fi
 
 # ------------------------------------------------------
-# HOST DISCOVERY
+# HOST DISCOVERY - Pingsweep using ICMP echo, netmask, timestamp
 # ------------------------------------------------------
-# Nmap - Pingsweep using ICMP echo, netmask, timestamp
-echo
 echo "--------------------------------------------------"
 echo "Nmap Pingsweep - ICMP echo, netmask, timestamp & TCP SYN, and UDP"
 echo "--------------------------------------------------"
 nmap -PA"21-23,25,53,80,88,110,111,135,139,443,445,3389,8080" -PE -PM -PP -PS"21-23,25,53,80,88,110,111,135,139,443,445,3389,8080" -PU"42,53,67-68,88,111,123,135,137,138,161,500,3389,5355" -PY"22,80,179,5060" -T5 -R --reason --resolve-all -sn -iL $targets -oA $wrkpth/Nmap/$prj_name-nmap_pingsweep-$TodaysDAY-$TodaysYEAR
-cat `ls $wrkpth/Nmap/$prj_name- | grep pingsweep-$TodaysDAY-$TodaysYEAR | grep gnmap` | grep Up | cut -d ' ' -f 2 | sort } uniq >> $wrkpth/Nmap/$prj_name-livehosts-$TodaysDAY-$TodaysYEAR
+cat `ls $wrkpth/Nmap/$prj_name- | grep pingsweep-$TodaysDAY-$TodaysYEAR | grep gnmap` | grep Up | cut -d ' ' -f 2 | sort | uniq >> $wrkpth/Nmap/$prj_name-livehosts-$TodaysDAY-$TodaysYEAR
+cat `ls $wrkpth/Nmap/$prj_name- | grep pingsweep-$TodaysDAY-$TodaysYEAR | grep gnmap` | grep -E "(\.gov|\.us|\.net|\.com|\.edu|\.org|\.biz|\.io|\.info)" | sort | uniq >> $wrkpth/Nmap/$prj_name-livehosts-$TodaysDAY-$TodaysYEAR
 echo
 
 # ------------------------------------------------------
-# PORT SCANNING
+# PORT SCANNING - Full TCP SYN & UDP scan on live targets
 # ------------------------------------------------------
-# Nmap - Full TCP SYN & UDP scan on live targets
 echo "--------------------------------------------------"
 echo "Performing portknocking scan using Nmap"
 echo "--------------------------------------------------"
-echo
 echo "Full TCP SYN & UDP scan on live targets"
 nmap -A -Pn -R --reason --resolve-all -sSUV -T4 --open -F -iL $wrkpth/Nmap/$prj_name-livehosts-$TodaysDAY-$TodaysYEAR -oA $wrkpth/Nmap/$prj_name-nmap_portknock-$TodaysDAY-$TodaysYEAR
 for i in domain http imap isakmp microsoft-ds ms-wbt-server netbios-ssn smtp snmp ssh ssl telnet; do cat $wrkpth/Nmap/$prj_name-nmap_portknock-$TodaysDAY-$TodaysYEAR | grep $i | grep open | cut -d ' ' -f 2 > $wrkpth/Nmap/$prj_name-`echo $i | tr '[:lower:]' '[:upper:]'`-$TodaysDAY-$TodaysYEAR; done
 for i in `ls | grep xml`; do python3 /opt/nmap-converter/nmap-converter.py -o "$wrkpth/Nmap/$prj_name-nmap_portknock-$TodaysDAY-$TodaysYEAR.xlsx" "$i"; python3 /opt/nmaptocsv/nmaptocsv.py -x "$i" -S -d "," -n -o $wrkpth/Nmap/$i-$TodaysDAY-$TodaysYEAR.csv; done
 batea -A $wrkpth/Nmap/$prj_name-*.xml > $wrkpth/Nmap/$prj_name-batea-$TodaysDAY-$TodaysYEAR.json
+echo
 
 # ------------------------------------------------------
 # CLEANING HOUSE
