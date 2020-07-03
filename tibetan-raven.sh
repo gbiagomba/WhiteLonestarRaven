@@ -51,6 +51,15 @@ elif [ ! -e $targets ]; then
     exit
 fi
 
+# Check that nmao output file exists
+function fileExists {
+  if [ ! -s $wrkpth/Nmap/$prj_name-nmap_pingsweep-$TodaysDAY-$TodaysYEAR.gnmap ]; then
+    echo "$wrkpth/Nmap/$prj_name-nmap_pingsweep-$TodaysDAY-$TodaysYEAR.gnmap does not exist"
+    echo "Check stdout (terminal output) for any errors in nmap & check internet connection"
+    exit
+  fi
+}
+
 echo "What is the name of the project or SAS?"
 read prj_name
 echo
@@ -72,8 +81,9 @@ nmap -R --reason --resolve-all -sn -PP -iL $targets -oA $wrkpth/Nmap/$prj_name-i
 nmap -R --reason --resolve-all -sn -PM -iL $targets -oA $wrkpth/Nmap/$prj_name-icmpnetmask-$TodaysDAY-$TodaysYEAR
 echo
 
-# Systems that respond to ping (finding)
-cat `ls $wrkpth/Nmap/ | grep gnmap | grep $TodaysDAY-$TodaysYEAR` | grep Up | cut -d ' ' -f 2 | sort | uniq >> $wrkpth/Nmap/$prj_name-live-$TodaysDAY-$TodaysYEAR
+# Parsing Systems that responded to ping (finding)
+cat `ls $wrkpth/Nmap/ | grep $prj_name | grep gnmap | grep $TodaysDAY-$TodaysYEAR` | grep Up | cut -d ' ' -f 2 | sort | uniq >> $wrkpth/Nmap/$prj_name-live-$TodaysDAY-$TodaysYEAR
+fileExists
 
 # Nmap - Pingsweep using TCP SYN/ACK, UDP and SCTP
 echo "--------------------------------------------------"
@@ -83,7 +93,8 @@ nmap -R --reason --resolve-all -sn -PS "21,22,23,25,53,80,88,110,111,135,139,443
 nmap -R --reason --resolve-all -sn -PU "42,53,67-68,88,111,123,135,137,138,161,500,3389,5355" -iL $wrkpth/Nmap/$prj_name-live-$TodaysDAY-$TodaysYEAR -oA $wrkpth/Nmap/$prj_name-pingsweepUDP-$TodaysDAY-$TodaysYEAR
 nmap -R --reason --resolve-all -sn -PA "21-23,25,53,80,88,110,111,135,139,443,445,3389,8080" -iL $wrkpth/Nmap/$prj_name-live-$TodaysDAY-$TodaysYEAR -oA $wrkpth/Nmap/$prj_name-pingsweepTCP-ACK-$TodaysDAY-$TodaysYEAR
 nmap -R --reason --resolve-all -sn -PY "22,80,179,5060" -iL $wrkpth/Nmap/$prj_name-pingresponse-$TodaysDAY-$TodaysYEAR -oA $wrkpth/Nmap/$prj_name-pingsweepSCTP-$TodaysDAY-$TodaysYEAR
-cat `ls $wrkpth/Nmap/ | grep pingsweep | grep $TodaysDAY-$TodaysYEAR | grep gnmap` | grep Up | cut -d ' ' -f 2 >> $wrkpth/Nmap/$prj_name-live-$TodaysDAY-$TodaysYEAR
+cat `ls $wrkpth/Nmap/ | grep $prj_name | grep pingsweep | grep $TodaysDAY-$TodaysYEAR | grep gnmap` | grep Up | cut -d ' ' -f 2 >> $wrkpth/Nmap/$prj_name-live-$TodaysDAY-$TodaysYEAR
+fileExists
 
 # Create unique live-$TodaysDAY-$TodaysYEAR hosts file
 cat $wrkpth/Nmap/$prj_name-live-$TodaysDAY-$TodaysYEAR | sort | uniq > $wrkpth/Nmap/$prj_name-livehosts-$TodaysDAY-$TodaysYEAR
@@ -95,21 +106,33 @@ cat $wrkpth/Nmap/$prj_name-live-$TodaysDAY-$TodaysYEAR | grep -E "(\.gov|\.us|\.
 
 # Nmap - Full TCP SYN scan on live
 nmap -R --reason --resolve-all -sSV -PN -A -T4 -p0-65535 -iL $wrkpth/Nmap/$prj_name-livehosts-$TodaysDAY-$TodaysYEAR -oA $wrkpth/Nmap/$prj_name-TCPdetails-$TodaysDAY-$TodaysYEAR --script=rdp-enum-encryption,ssl-enum-ciphers,vulners,vulscan/vulscan.nse
-cat $wrkpth/Nmap/$prj_name-TCPdetails-$TodaysDAY-$TodaysYEAR.gnmap | grep smtp | grep open | cut -d ' ' -f 2 > $wrkpth/Nmap/$prj_name-SMTP-$TodaysDAY-$TodaysYEAR
-cat $wrkpth/Nmap/$prj_name-TCPdetails-$TodaysDAY-$TodaysYEAR.gnmap | grep domain | grep open | cut -d ' ' -f 2 > $wrkpth/Nmap/$prj_name-DNS-$TodaysDAY-$TodaysYEAR
-cat $wrkpth/Nmap/$prj_name-TCPdetails-$TodaysDAY-$TodaysYEAR.gnmap | grep telnet | grep open | cut -d ' ' -f 2 > $wrkpth/Nmap/$prj_name-telnet-$TodaysDAY-$TodaysYEAR
-cat $wrkpth/Nmap/$prj_name-TCPdetails-$TodaysDAY-$TodaysYEAR.gnmap | grep microsoft-ds | grep open | cut -d ' ' -f 2 > $wrkpth/Nmap/$prj_name-SMB-$TodaysDAY-$TodaysYEAR
-cat $wrkpth/Nmap/$prj_name-TCPdetails-$TodaysDAY-$TodaysYEAR.gnmap | grep netbios-ssn | grep open | cut -d ' ' -f 2 > $wrkpth/Nmap/$prj_name-netbios-$TodaysDAY-$TodaysYEAR
-cat $wrkpth/Nmap/$prj_name-TCPdetails-$TodaysDAY-$TodaysYEAR.gnmap | grep http | grep open | cut -d ' ' -f 2 > $wrkpth/Nmap/$prj_name-HTTP-$TodaysDAY-$TodaysYEAR
-cat $wrkpth/Nmap/$prj_name-TCPdetails-$TodaysDAY-$TodaysYEAR.gnmap | grep ssh | grep open | cut -d ' ' -f 2 > $wrkpth/Nmap/$prj_name-SSH-$TodaysDAY-$TodaysYEAR
-cat $wrkpth/Nmap/$prj_name-TCPdetails-$TodaysDAY-$TodaysYEAR.gnmap | grep ssl | grep open | cut -d ' ' -f 2 > $wrkpth/Nmap/$prj_name-SSL-$TodaysDAY-$TodaysYEAR
-cat $wrkpth/Nmap/$prj_name-TCPdetails-$TodaysDAY-$TodaysYEAR.gnmap | grep ms-wbt-server | grep open | cut -d ' ' -f 2 > $wrkpth/Nmap/$prj_name-RDP-$TodaysDAY-$TodaysYEAR
-cat $wrkpth/Nmap/$prj_name-TCPdetails-$TodaysDAY-$TodaysYEAR.gnmap | grep imap | grep open | cut -d ' ' -f 2 > $wrkpth/Nmap/$prj_name-IMAP-$TodaysDAY-$TodaysYEAR
+if [ -r$wrkpth/Nmap/$prj_name-TCPdetails-$TodaysDAY-$TodaysYEAR.gnmap ] && [ -s$wrkpth/Nmap/$prj_name-TCPdetails-$TodaysDAY-$TodaysYEAR.gnmap ]; then
+  cat $wrkpth/Nmap/$prj_name-TCPdetails-$TodaysDAY-$TodaysYEAR.gnmap | grep smtp | grep open | cut -d ' ' -f 2 > $wrkpth/Nmap/$prj_name-SMTP-$TodaysDAY-$TodaysYEAR
+  cat $wrkpth/Nmap/$prj_name-TCPdetails-$TodaysDAY-$TodaysYEAR.gnmap | grep domain | grep open | cut -d ' ' -f 2 > $wrkpth/Nmap/$prj_name-DNS-$TodaysDAY-$TodaysYEAR
+  cat $wrkpth/Nmap/$prj_name-TCPdetails-$TodaysDAY-$TodaysYEAR.gnmap | grep telnet | grep open | cut -d ' ' -f 2 > $wrkpth/Nmap/$prj_name-telnet-$TodaysDAY-$TodaysYEAR
+  cat $wrkpth/Nmap/$prj_name-TCPdetails-$TodaysDAY-$TodaysYEAR.gnmap | grep microsoft-ds | grep open | cut -d ' ' -f 2 > $wrkpth/Nmap/$prj_name-SMB-$TodaysDAY-$TodaysYEAR
+  cat $wrkpth/Nmap/$prj_name-TCPdetails-$TodaysDAY-$TodaysYEAR.gnmap | grep netbios-ssn | grep open | cut -d ' ' -f 2 > $wrkpth/Nmap/$prj_name-netbios-$TodaysDAY-$TodaysYEAR
+  cat $wrkpth/Nmap/$prj_name-TCPdetails-$TodaysDAY-$TodaysYEAR.gnmap | grep http | grep open | cut -d ' ' -f 2 > $wrkpth/Nmap/$prj_name-HTTP-$TodaysDAY-$TodaysYEAR
+  cat $wrkpth/Nmap/$prj_name-TCPdetails-$TodaysDAY-$TodaysYEAR.gnmap | grep ssh | grep open | cut -d ' ' -f 2 > $wrkpth/Nmap/$prj_name-SSH-$TodaysDAY-$TodaysYEAR
+  cat $wrkpth/Nmap/$prj_name-TCPdetails-$TodaysDAY-$TodaysYEAR.gnmap | grep ssl | grep open | cut -d ' ' -f 2 > $wrkpth/Nmap/$prj_name-SSL-$TodaysDAY-$TodaysYEAR
+  cat $wrkpth/Nmap/$prj_name-TCPdetails-$TodaysDAY-$TodaysYEAR.gnmap | grep ms-wbt-server | grep open | cut -d ' ' -f 2 > $wrkpth/Nmap/$prj_name-RDP-$TodaysDAY-$TodaysYEAR
+  cat $wrkpth/Nmap/$prj_name-TCPdetails-$TodaysDAY-$TodaysYEAR.gnmap | grep imap | grep open | cut -d ' ' -f 2 > $wrkpth/Nmap/$prj_name-IMAP-$TodaysDAY-$TodaysYEAR
+elif [ ! -s $wrkpth/Nmap/$prj_name-TCPdetails-$TodaysDAY-$TodaysYEAR.gnmap ]; then
+    echo "$wrkpth/Nmap/$prj_name-TCPdetails-$TodaysDAY-$TodaysYEAR.gnmap does not exist"
+    echo "Check stdout (terminal output) for any errors in nmap & check internet connection"
+    exit
+  fi
 
 # Nmap - Default UDP scan on live
 nmap -R --reason --resolve-all -sUV -PN -T4 --host-timeout 30m -iL $wrkpth/Nmap/$prj_name-livehosts-$TodaysDAY-$TodaysYEAR -oA $wrkpth/Nmap/$prj_name-UDPdetails-$TodaysDAY-$TodaysYEAR
-cat $wrkpth/Nmap/$prj_name-UDPdetails-$TodaysDAY-$TodaysYEAR.gnmap | grep snmp | grep open | cut -d ' ' -f 2 > $wrkpth/Nmap/$prj_name-SNMP-$TodaysDAY-$TodaysYEAR
-cat $wrkpth/Nmap/$prj_name-UDPdetails-$TodaysDAY-$TodaysYEAR.gnmap | grep isakmp | grep open | cut -d ' ' -f 2 > $wrkpth/Nmap/$prj_name-ISAKMP-$TodaysDAY-$TodaysYEAR
+if [ -r cat $wrkpth/Nmap/$prj_name-UDPdetails-$TodaysDAY-$TodaysYEAR.gnmap ] && [ - s cat $wrkpth/Nmap/$prj_name-UDPdetails-$TodaysDAY-$TodaysYEAR.gnmap ]; then
+  cat $wrkpth/Nmap/$prj_name-UDPdetails-$TodaysDAY-$TodaysYEAR.gnmap | grep snmp | grep open | cut -d ' ' -f 2 > $wrkpth/Nmap/$prj_name-SNMP-$TodaysDAY-$TodaysYEAR
+  cat $wrkpth/Nmap/$prj_name-UDPdetails-$TodaysDAY-$TodaysYEAR.gnmap | grep isakmp | grep open | cut -d ' ' -f 2 > $wrkpth/Nmap/$prj_name-ISAKMP-$TodaysDAY-$TodaysYEAR
+elif [ ! -s $wrkpth/Nmap/$prj_name-UDPdetails-$TodaysDAY-$TodaysYEAR.gnmap ]; then
+    echo "$wrkpth/Nmap/$prj_name-UDPdetails-$TodaysDAY-$TodaysYEAR.gnmap does not exist"
+    echo "Check stdout (terminal output) for any errors in nmap & check internet connection"
+    exit
+fi
 
 # Nmap - Reporting
 for i in `ls | grep xml`; do 
