@@ -98,7 +98,7 @@ fileExists
 
 # Create unique live-$TodaysDAY-$TodaysYEAR hosts file
 cat $wrkpth/Nmap/$prj_name-live-$TodaysDAY-$TodaysYEAR | sort | uniq > $wrkpth/Nmap/$prj_name-livehosts-$TodaysDAY-$TodaysYEAR
-cat $wrkpth/Nmap/$prj_name-live-$TodaysDAY-$TodaysYEAR | grep -E "(\.gov|\.us|\.net|\.com|\.edu|\.org|\.biz|\.io|\.info)" | sort | uniq >> $wrkpth/Nmap/$prj_name-livehosts-$TodaysDAY-$TodaysYEAR
+cat $wrkpth/Nmap/$prj_name-live-$TodaysDAY-$TodaysYEAR | grep -E "(\.gov|\.us|\.net|\.com|\.edu|\.org|\.biz|\.io|\.info)" | cut -d "(" -f 2 | cut -d ")" -f 1 | sort | uniq >> $wrkpth/Nmap/$prj_name-livehosts-$TodaysDAY-$TodaysYEAR
 
 # ------------------------------------------------------
 # PORT SCANNING
