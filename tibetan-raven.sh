@@ -53,11 +53,13 @@ fi
 
 # Check that nmao output file exists
 function fileExists {
-  if [ ! -s $wrkpth/Nmap/$prj_name-nmap_pingsweep-$TodaysDAY-$TodaysYEAR.gnmap ]; then
-    echo "$wrkpth/Nmap/$prj_name-nmap_pingsweep-$TodaysDAY-$TodaysYEAR.gnmap does not exist"
-    echo "Check stdout (terminal output) for any errors in nmap & check internet connection"
-    exit
-  fi
+  for i in $wrkpth/Nmap/$prj_name-pingsweepTCP-$TodaysDAY-$TodaysYEAR $wrkpth/Nmap/$prj_name-pingsweepUDP-$TodaysDAY-$TodaysYEAR $wrkpth/Nmap/$prj_name-pingsweepTCP-ACK-$TodaysDAY-$TodaysYEAR $wrkpth/Nmap/$prj_name-pingsweepSCTP-$TodaysDAY-$TodaysYEAR $wrkpth/Nmap/$prj_name-icmpecho-$TodaysDAY-$TodaysYEAR $wrkpth/Nmap/$prj_name-icmptimestamp-$TodaysDAY-$TodaysYEAR $wrkpth/Nmap/$prj_name-icmpnetmask-$TodaysDAY-$TodaysYEAR; do
+    if [ ! -s $i  ]; then
+      echo "$i does not exist"
+      echo "Check stdout (terminal output) for any errors in nmap & check internet connection"
+      exit
+    fi
+  done
 }
 
 echo "What is the name of the project or SAS?"
@@ -79,11 +81,11 @@ echo "--------------------------------------------------"
 nmap -R --reason --resolve-all -sn -PE -iL $targets -oA $wrkpth/Nmap/$prj_name-icmpecho-$TodaysDAY-$TodaysYEAR
 nmap -R --reason --resolve-all -sn -PP -iL $targets -oA $wrkpth/Nmap/$prj_name-icmptimestamp-$TodaysDAY-$TodaysYEAR
 nmap -R --reason --resolve-all -sn -PM -iL $targets -oA $wrkpth/Nmap/$prj_name-icmpnetmask-$TodaysDAY-$TodaysYEAR
+fileExists
 echo
 
 # Parsing Systems that responded to ping (finding)
 cat `ls $wrkpth/Nmap/ | grep $prj_name | grep gnmap | grep $TodaysDAY-$TodaysYEAR` | grep Up | cut -d ' ' -f 2 | sort | uniq >> $wrkpth/Nmap/$prj_name-live-$TodaysDAY-$TodaysYEAR
-fileExists
 
 # Nmap - Pingsweep using TCP SYN/ACK, UDP and SCTP
 echo "--------------------------------------------------"
@@ -95,6 +97,7 @@ nmap -R --reason --resolve-all -sn -PA "21-23,25,53,80,88,110,111,135,139,443,44
 nmap -R --reason --resolve-all -sn -PY "22,80,179,5060" -iL $wrkpth/Nmap/$prj_name-pingresponse-$TodaysDAY-$TodaysYEAR -oA $wrkpth/Nmap/$prj_name-pingsweepSCTP-$TodaysDAY-$TodaysYEAR
 cat `ls $wrkpth/Nmap/ | grep $prj_name | grep pingsweep | grep $TodaysDAY-$TodaysYEAR | grep gnmap` | grep Up | cut -d ' ' -f 2 >> $wrkpth/Nmap/$prj_name-live-$TodaysDAY-$TodaysYEAR
 fileExists
+echo
 
 # Create unique live-$TodaysDAY-$TodaysYEAR hosts file
 cat $wrkpth/Nmap/$prj_name-live-$TodaysDAY-$TodaysYEAR | sort | uniq > $wrkpth/Nmap/$prj_name-livehosts-$TodaysDAY-$TodaysYEAR

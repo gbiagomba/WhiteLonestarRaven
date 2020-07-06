@@ -62,6 +62,7 @@ echo "--------------------------------------------------"
 echo "Nmap Pingsweep - ICMP echo, netmask, timestamp & TCP SYN, and UDP"
 echo "--------------------------------------------------"
 nmap -T5 --host-timeout 30m --randomize-hosts -PA "21-23,25,53,80,88,110,111,135,139,443,445,3389,8080" -PE -PM -PP -PS "21-23,25,53,80,88,110,111,135,139,443,445,3389,8080" -PU "42,53,67-68,88,111,123,135,137,138,161,500,3389,5355" -PY "22,80,179,5060" -R --reason --resolve-all -sn -iL $targets -oA $wrkpth/Nmap/$prj_name-nmap_pingsweep-$TodaysDAY-$TodaysYEAR
+nmap -PA"21-23,25,53,80,88,110,111,135,139,443,445,3389,8080" -PE -PS"21-23,25,53,80,88,110,111,135,139,443,445,3389,8080" -PU"42,53,67-68,88,111,123,135,137,138,161,500,3389,5355" -PY"22,80,179,5060" -T5 -R --reason --resolve-all -sn -6 -iL $targets -oA $wrkpth/Nmap/$prj_name-nmap_pingsweepv6-$TodaysDAY-$TodaysYEAR
 if [ -s $wrkpth/Nmap/$prj_name-nmap_pingsweep-$TodaysDAY-$TodaysYEAR.gnmap ] && [ -r $wrkpth/Nmap/$prj_name-nmap_pingsweep-$TodaysDAY-$TodaysYEAR.gnmap ]; then
     cat $wrkpth/Nmap/$prj_name-nmap_pingsweep-$TodaysDAY-$TodaysYEAR.gnmap | grep Up | cut -d ' ' -f 2 | sort | uniq >> $wrkpth/Nmap/$prj_name-livehosts-$TodaysDAY-$TodaysYEAR
     cat $wrkpth/Nmap/$prj_name-nmap_pingsweep-$TodaysDAY-$TodaysYEAR.gnmap | grep -E "(\.gov|\.us|\.net|\.com|\.edu|\.org|\.biz|\.io|\.info)" | cut -d "(" -f 2 | cut -d ")" -f 1 | sort | uniq >> $wrkpth/Nmap/$prj_name-livehosts-$TodaysDAY-$TodaysYEAR
