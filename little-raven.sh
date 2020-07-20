@@ -108,3 +108,4 @@ zip -ru9 $wrkpth/$prj_name-$TodaysYEAR.zip $wrkpth/Nmap
 # Uninitializing variables
 for var in TodaysDAY TodaysYEAR wrkpth wrktmp targets ; do unset $var; done
 unset var
+exit
