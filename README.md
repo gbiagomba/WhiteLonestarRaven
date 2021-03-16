@@ -103,6 +103,7 @@ As a wise man once said: "With great power, comes great responsibility" - Uncle 
 ### TODO:
 - [ ] Add install script support for other UNX/NIX systems
 - [ ] Add a help menu
-- [ ] deteecting between a filename and ip/fdqn
+- [ ] Deteecting between a filename and ip/fdqn
 - [ ] Give users the ability to change how aggressive they want the scan to run
 - [ ] Convert to either a python script or rust program
+- [ ] Add IPv6 scanning detection/support
