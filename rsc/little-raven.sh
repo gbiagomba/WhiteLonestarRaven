@@ -38,6 +38,24 @@ prj_name=$2
 # Setting Envrionment
 mkdir -p $wrkpth/tools/nmap $wrkpth/tools/masscan
 
+# options
+while :; do
+    case $1 in
+        -a|--flag1) flag1="SET"            
+        ;;
+        -b|--flag2) flag2="SET"            
+        ;;
+        -c|--optflag1) optflag1="SET"            
+        ;;
+        -d|--optflag2) optflag2="SET"            
+        ;;
+        -e|--optflag3) optflag3="SET"            
+        ;;
+        *) break
+    esac
+    shift
+done
+
 # Requesting target file name or checking the target file exists & requesting the project name
 if [ -z $targets ]; then
     echo "What is the name of the targets file? The file with all the IP addresses or FQDNs?"

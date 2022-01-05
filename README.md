@@ -29,8 +29,18 @@ I create this script to help automate host and port discovery during the recon p
 
 ## Usage:
 ```
-./tibetan-raven.sh targetfile
-./little-raven.sh targetfile
+-h, --help               show brief help
+-iL, --target-file       specify the target list
+-l, --list-modes         list the modes and see what they are about
+-m, --mode               specify scan mode (i.e., fastscan, fullsweep, logincheck, pingsweep, portknock)
+-o, --output             specify the output file (default: stdout)
+-p, --port               specify the port(s) you want to scan (default is top 250 ports)
+-s, --sas-name           specify the SAS or SECVULN name (default is CPT)
+-d, --target             specify the target you want to scan (e.g., 127.0.0.1, example.cable.comcast.com)
+
+Example:
+raven.sh -d example.cable.comcast.com
+raven.sh -iL targets.list -o /path/to/output/filename # You do not need to specify the file extension
 ```
 Obviously you would substitute the "desired_nmap_script.sh" with the actual script version you want.
 
@@ -59,7 +69,7 @@ Named after one of the smallest ravens in its species, this is a lightweight ver
 Named after one of the biggest ravens in its species. this is a heavyweight version of its counterpart. It was designed to perform a comprehensive pingsweep and portknock scan of a target network. First it performs seeprated/individual ICMP, TCP SYN/ACK, UDP scans. Then it checks all 65,535 TCP/UDP ports. Un;llike the counter part, this script will perform an agrevise scan and it will run additional scripts when performing the portknock. Lastly, the results are dumped into a folder and that folder is later compressesed.
 
 ## Dependencies:
-I provided an install script, do note that install script was meant to be used in a debian system. If you are running on MacOSX or some other flavor of UNX/NIX than you will have to fetch the dependencies manually. You will need to clone the below reports into /opt/ and install all the dependencies fore each project. 
+I provided an install script, do note that install script will try to install those dependicies for you for most popular UNX/LNX distributions. If it fails, you than you will have to fetch the dependencies manually. You will need to clone the below reports into /opt/ and install all the dependencies for each repo. 
 ```
 https://github.com/vulnersCom/nmap-vulners
 https://github.com/scipag/VulScan
@@ -101,9 +111,7 @@ As a wise man once said: "With great power, comes great responsibility" - Uncle 
 ```
 
 ### TODO:
-- [ ] Add install script support for other UNX/NIX systems
-- [ ] Add a help menu
-- [ ] Deteecting between a filename and ip/fdqn
-- [ ] Give users the ability to change how aggressive they want the scan to run
-- [ ] Convert to either a python script or rust program
-- [ ] Add IPv6 scanning detection/support
+- [x] Add install script support for other UNX/NIX systems
+- [x] Add a help menu
+- [ ] Convert to rust program []INPROGRESS
+- [x] Add IPv6 scanning detection/support
