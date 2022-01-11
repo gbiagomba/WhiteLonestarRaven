@@ -113,5 +113,5 @@ As a wise man once said: "With great power, comes great responsibility" - Uncle 
 ### TODO:
 - [x] Add install script support for other UNX/NIX systems
 - [x] Add a help menu
-- [ ] Convert to rust program []INPROGRESS
+- [ ] Convert to rust program [INPROGRESS]
 - [x] Add IPv6 scanning detection/support
