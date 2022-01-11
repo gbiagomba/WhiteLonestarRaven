@@ -4,6 +4,7 @@
 *.gnmap
 *.xml
 *.out
+*.txt
 
 # OS generated files #
 ######################

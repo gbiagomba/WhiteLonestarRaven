@@ -23,40 +23,6 @@ NMAP_PORT6="time nmap -6 -T4 --min-rate 1000p --max-retries 3 --defeat-rst-ratel
 NMAP_UDP="time nmap -T4 --min-rate 1000p --max-retries 2 --defeat-icmp-ratelimit --script-timeout 5 -A -Pn -R --reason --resolve-all -sUV --open --top-ports 1000"
 NMAP_UDP6="time nmap -6 -T4 --min-rate 1000p --max-retries 2 --defeat-icmp-ratelimit --script-timeout 5 -A -Pn -R --reason --resolve-all -sUV --open --top-ports 1000"
 
-# Menu
-# while getopts h:l:c:p: flag; do
-# 	case "${flag}" in
-#                 i) infolder=${OPTARG}
-#                         ;;
-#                 o) outfolder=${OPTARG}
-#                          ;;
-#                 *) echo "Invalid option: -$flag" ;;
-#         esac
-# done
-
-# while getopts "l:c:p:h" flag; do
-#     case "${flag}" in
-#         h|-help)
-#             echo
-#             echo "Usage:"
-#             echo "-h, --help               Show brief help"
-#             echo "-c, --count              Specify how many instances of nmap do you want running in parallel (default is 10)"
-#             echo "-l, --target-file        Specify the target list"
-#             echo "-o, --output             Specify the output filename"
-#             echo "-p, --project            Specify project name"
-#             echo
-#             echo "Example:"
-#             echo "nhopper.sh -l targets.list -p "ULA-2022Q1""
-#             echo "nhopper.sh -l targets.list -c 25 -p "MyProject-YYYYQX""
-#             exit
-#             ;;
-#         l) targetFile=$1;;
-#         c) threadCount=$1;;
-#         o) outputFile=$1;;
-#         p) projectName=$1;;
-#     esac
-# done
-
 while [ ! $# -eq 0 ]; do
 	case "$1" in
 		--help | -h)
@@ -154,9 +120,6 @@ function dep
         read outputFile
         echo
     fi
-
-    # Checking to see how many nmap targets are running
-    # decalre -i nmapExistingCount=$(pgrep -x nmap -u $(id -u $USERNAME) | wc -l)
 }
 
 # cleanup function
@@ -199,8 +162,3 @@ function main
         while [ $(pgrep -x nmap -u $(id -u $USERNAME) | wc -l) -ge $threadCount ]; do sleep 10; done
     done
 } | tee $outputFile.out
-
-# Possibl solutions
-# wrap nmap behind the time tool and check to see if time is running in memory
-# wrap the command behind xargs or parallel
-# put a conditional that if their are less then 10 nmaps running, to go ahead and run more
