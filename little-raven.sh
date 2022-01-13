@@ -12,16 +12,16 @@
 trap "echo Booh!" SIGINT SIGTERM
 
 # initiallizing variables
-current_time=$(date "+%Y.%m.%d-%H.%M.%S.%N")
+current_time=$(date +%Y.%m.%d.%H.%M.%S.%N)
 outputFile="$HOSTNAME-$projectName-nmap_output-$current_time"
 declare -i min=0
 declare -i c=10
-NMAP_PING="time nmap -T5 --min-rate 1500p --resolve-all -PA"21-23,25,53,79,80-83,88,110,111,135,139,161,179,443,445,497,515,535,548,993,1025,1028,1029,1917,2869,3389,5000,5060,6000,8080,9001,9100,49000" -PE -PM -PP -PO -PR -PS"21-23,25,53,79,80-83,88,110,111,135,139,161,179,443,445,497,515,535,548,993,1025,1028,1029,1917,2869,3389,5000,5060,6000,8080,9001,9100,49000" -PU"42,53,67-68,88,111,123,135,137,138,161,500,3389,5355" -PY"22,80,179,5060" -R --reason --resolve-all -sn"
-NMAP_PING6="time nmap -6 -T5 --min-rate 1500p --resolve-all -PA"21-23,25,53,79,80-83,88,110,111,135,139,161,179,443,445,497,515,535,548,993,1025,1028,1029,1917,2869,3389,5000,5060,6000,8080,9001,9100,49000" -PS"21-23,25,53,79,80-83,88,110,111,135,139,161,179,443,445,497,515,535,548,993,1025,1028,1029,1917,2869,3389,5000,5060,6000,8080,9001,9100,49000" -PU"42,53,67-68,88,111,123,135,137,138,161,500,3389,5355" -PY"22,80,179,5060" -T5 -R --reason --resolve-all -sn"
-NMAP_PORT=" nmap -T4 --min-rate 1000p --max-retries 3 --defeat-rst-ratelimit --script-timeout 5 -A -Pn -R --reason --resolve-all -sSV --open -p-"
-NMAP_PORT6="time nmap -6 -T4 --min-rate 1000p --max-retries 3 --defeat-rst-ratelimit --script-timeout 5 -A -Pn -R --reason --resolve-all -sSV --open -p-"
-NMAP_UDP="time nmap -T4 --min-rate 1000p --max-retries 2 --defeat-icmp-ratelimit --script-timeout 5 -A -Pn -R --reason --resolve-all -sUV --open --top-ports 1000"
-NMAP_UDP6="time nmap -6 -T4 --min-rate 1000p --max-retries 2 --defeat-icmp-ratelimit --script-timeout 5 -A -Pn -R --reason --resolve-all -sUV --open --top-ports 1000"
+NMAP_PING="nmap -T5 --min-rate 1500p --randomize-hosts --resolve-all -PA"21-23,25,53,79,80-83,88,110,111,135,139,161,179,443,445,497,515,535,548,993,1025,1028,1029,1917,2869,3389,5000,5060,6000,8080,9001,9100,49000" -PE -PM -PP -PO -PR -PS"21-23,25,53,79,80-83,88,110,111,135,139,161,179,443,445,497,515,535,548,993,1025,1028,1029,1917,2869,3389,5000,5060,6000,8080,9001,9100,49000" -PU"42,53,67-68,88,111,123,135,137,138,161,500,3389,5355" -PY"22,80,179,5060" -R --reason --resolve-all -sn"
+NMAP_PING6="nmap -6 -T5 --min-rate 1500p --randomize-hosts --resolve-all -PA"21-23,25,53,79,80-83,88,110,111,135,139,161,179,443,445,497,515,535,548,993,1025,1028,1029,1917,2869,3389,5000,5060,6000,8080,9001,9100,49000" -PS"21-23,25,53,79,80-83,88,110,111,135,139,161,179,443,445,497,515,535,548,993,1025,1028,1029,1917,2869,3389,5000,5060,6000,8080,9001,9100,49000" -PU"42,53,67-68,88,111,123,135,137,138,161,500,3389,5355" -PY"22,80,179,5060" -T5 -R --reason --resolve-all -sn"
+NMAP_PORT="nmap -T4 --min-rate 1500p --randomize-hosts --max-retries 3 --defeat-rst-ratelimit --script-timeout 5 -A -Pn -R --reason --resolve-all -sSV --open -p-"
+NMAP_PORT6="nmap -6 -T4 --min-rate 1500p --randomize-hosts --max-retries 3 --defeat-rst-ratelimit --script-timeout 5 -A -Pn -R --reason --resolve-all -sSV --open -p-"
+NMAP_UDP="nmap -T5 --min-rate 1500p --randomize-hosts --max-retries 2 --defeat-icmp-ratelimit --script-timeout 5 -A -Pn -R --reason --resolve-all -sUV --open --top-ports 1000"
+NMAP_UDP6="nmap -6 -T5 --min-rate 1500p --randomize-hosts --max-retries 2 --defeat-icmp-ratelimit --script-timeout 5 -A -Pn -R --reason --resolve-all -sUV --open --top-ports 1000"
 
 while [ ! $# -eq 0 ]; do
 	case "$1" in
@@ -35,8 +35,8 @@ while [ ! $# -eq 0 ]; do
             echo "-p, --project            specify project name"
 			echo
 			echo "Example:"
-			echo "nhopper.sh -l targets.list -p "ULA-2022Q1""
-            echo "nhopper.sh -l targets.list -c 25 -p "MyProject-YYYYQX""
+			echo "little-raven.sh -l targets.list -p "ULA-2022Q1""
+            echo "little-raven.sh -l targets.list -c 25 -p "MyProject-YYYYQX""
 			exit
             shift
             ;;
@@ -120,6 +120,10 @@ function dep
         read outputFile
         echo
     fi
+
+    # Figuring out how many nmaps are running
+    nmapCount=$(pgrep -x nmap -u $(id -u $USERNAME) | wc -l | tr -d " ")
+    threadCount=$(expr $nmapCount + $threadCount)
 }
 
 # cleanup function
@@ -128,27 +132,39 @@ function cleanup
     for i in `ls | egrep -i "\.gnmap|\.nmap"`; do
         if [ `tail -n 1 $i | cut -d "(" -f 2 | cut -d ")" -f 1 | cut -d " " -f 1` eq 0 ]; then
             rm -f $i
-        else
-            cp -r $i $HOME/../scantron/autoforklift/ingest/
         fi
     done
+
+    if [ -d $HOME/../scantron/autoforklift/ingest/ ]; then
+        for i in `ls | grep -i "\.xml"`; do
+            cp -r $i $HOME/../scantron/autoforklift/ingest/
+        done
+    fi
     find $PWD -type d,f -empty | xargs rm -rf
+    XZ_OPT=-e9 tar -cvJf $PWD/../$projectName.tar.xz $PWD/
+    mv $PWD/../$projectName.tar.xz $PWD/
+}
+# parse results files
+function parse_results
+{
+    local nmapOutput=$1
+    cat $nmapOutput | cut -d "(" -f 2 | cut -d ")" -f 1 | sort -fu | grep -iv "nmap" | tee -a $nmapOutput.list
 }
 
 # main function
 function main
 {
 	local local_target=$1
-    local current_time=$(date "+%Y.%m.%d-%H.%M.%S.%N")
+    local current_time=$(date "+%Y.%m.%d.%H.%M.%S.%N")
     local NMAP_SCRIPTARG="newtargets,iX=$HOSTNAME-$projectName-pingsweep-$current_time.xml"
+    local NMAP_SCRIPTARG6="newtargets,iX=$HOSTNAME-$projectName-pingsweep6-$current_time.xml"
     local NMAP_SCRIPTS="vulners,targets-xml"
+    local NMAP_CMD="$NMAP_PING -oA $HOSTNAME-$projectName-pingsweep-$current_time "$local_target"; $NMAP_PORT --script $NMAP_SCRIPTS --script-args $NMAP_SCRIPTARG -oA $HOSTNAME-$projectName-portknock-$current_time; $NMAP_UDP --script $NMAP_SCRIPTS --script-args $NMAP_SCRIPTARG -oA $HOSTNAME-$projectName-portknock_udp-$current_time"
+    local NMAP_CMD6="$NMAP_PING6 -oA $HOSTNAME-$projectName-pingsweep6-$current_time "$local_target"; $NMAP_PORT6 --script $NMAP_SCRIPTS --script-args $NMAP_SCRIPTARG6 -oA $HOSTNAME-$projectName-portknock6-$current_time; $NMAP_UDP6 --script $NMAP_SCRIPTS --script-args $NMAP_SCRIPTARG6 -oA $HOSTNAME-$projectName-portknock_udp6-$current_time"
     if [ -x screen ] || hash screen 2>/dev/null; then
-        echo "Using screen to scan $local_target"
-        screen -dmS $RANDOM bash -c "$NMAP_PING -oA $HOSTNAME-$projectName-pingsweep-$current_time "$local_target"; $NMAP_PORT --script $NMAP_SCRIPTS --script-args $NMAP_SCRIPTARG -oA $HOSTNAME-$projectName-portknock-$current_time; $NMAP_UDP --script $NMAP_SCRIPTS --script-args $NMAP_SCRIPTARG -oA $HOSTNAME-$projectName-portknock_udp-$current_time"
+        echo "Using screen to scan $local_target"; screen -dmS $RANDOM bash -c "$NMAP_CMD" # ; parse_results $HOSTNAME-$projectName-pingsweep-$current_time.gnmap; $NMAP_CMD6"
     elif [ -x tmux ] || hash tmux 2>/dev/null; then
-        echo "Using tmux to scan $local_target"
-        tmux new -d -s $RANDOM
-        tmux send-keys -t $(tmux ls | cut -d ":" -f 1 | sort -fnru | tail -n 1).0 "$NMAP_PING -oA $HOSTNAME-$projectName-pingsweep-$current_time "$local_target"; $NMAP_PORT --script $NMAP_SCRIPTS --script-args $NMAP_SCRIPTARG -oA $HOSTNAME-$projectName-portknock-$current_time; $NMAP_UDP --script $NMAP_SCRIPTS --script-args $NMAP_SCRIPTARG -oA $HOSTNAME-$projectName-portknock_udp-$current_time" ENTER
+        echo "Using tmux to scan $local_target"; tmux new -d -s $RANDOM; tmux send-keys -t $(tmux ls | cut -d ":" -f 1 | sort -fnru | tail -n 1).0 "$NMAP_CMD" # ; parse_results $HOSTNAME-$projectName-pingsweep-$current_time.gnmap; $NMAP_CMD6" ENTER
     fi
 }
 
@@ -156,9 +172,8 @@ function main
 {
     banner
     dep
-    for i in `cat $targetFile`; do
+    for i in `cat $targetFile | sort -R`; do
         main $i
-        # let "min+=1"
-        while [ $(pgrep -x nmap -u $(id -u $USERNAME) | wc -l) -ge $threadCount ]; do sleep 10; done
+        while [ $(pgrep -x nmap -u $(id -u $USERNAME) | wc -l | tr -d " ") -ge $threadCount ]; do sleep 10; done
     done
 } | tee $outputFile.out
