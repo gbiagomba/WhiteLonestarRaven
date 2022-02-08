@@ -130,19 +130,23 @@ function dep
 function cleanup
 {
     for i in `ls | egrep -i "\.gnmap|\.nmap"`; do
-        if [ `tail -n 1 $i | cut -d "(" -f 2 | cut -d ")" -f 1 | cut -d " " -f 1` eq 0 ]; then
-            rm -f $i
+        if [ `tail -n 1 $i | cut -d "(" -f 2 | cut -d ")" -f 1 | cut -d " " -f 1` -eq 0 ]; then
+            echo "Removing $i, $(echo $i | cut -d "." -f 1-7).gnmap, $(echo $i | cut -d "." -f 1-7).nmap"
+            rm -f $i $(echo $i | cut -d "." -f 1-7).gnmap $(echo $i | cut -d "." -f 1-7).nmap
         fi
-    done
+    done 2> /dev/null
 
     if [ -d $HOME/../scantron/autoforklift/ingest/ ]; then
         for i in `ls | grep -i "\.xml"`; do
-            cp -r $i $HOME/../scantron/autoforklift/ingest/
+            if [ `tail -n 1 $i | cut -d "(" -f 2 | cut -d ")" -f 1 | cut -d " " -f 1` -gt 0 ]; then
+                echo "Moving $i"
+                cp -r $i $HOME/../scantron/autoforklift/ingest/
+            fi
         done
     fi
     find $PWD -type d,f -empty | xargs rm -rf
     XZ_OPT=-e9 tar -cvJf $PWD/../$projectName.tar.xz $PWD/
-    mv $PWD/../$projectName.tar.xz $PWD/
+    mv $PWD/../$outputFile.tar.xz $PWD/
 }
 # parse results files
 function parse_results
@@ -173,7 +177,8 @@ function main
     banner
     dep
     for i in `cat $targetFile | sort -R`; do
-        main $i
         while [ $(pgrep -x nmap -u $(id -u $USERNAME) | wc -l | tr -d " ") -ge $threadCount ]; do sleep 10; done
+        main $i
     done
+    cleanup
 } | tee $outputFile.out
