@@ -129,13 +129,16 @@ function dep
 # cleanup function
 function cleanup
 {
+    echo "Cleaning up files that are empty or have zero host discovered"
     for i in `ls | egrep -i "\.gnmap|\.nmap"`; do
         if [ `tail -n 1 $i | cut -d "(" -f 2 | cut -d ")" -f 1 | cut -d " " -f 1` -eq 0 ]; then
             echo "Removing $i, $(echo $i | cut -d "." -f 1-7).gnmap, $(echo $i | cut -d "." -f 1-7).nmap"
             rm -f $i $(echo $i | cut -d "." -f 1-7).gnmap $(echo $i | cut -d "." -f 1-7).nmap
         fi
     done 2> /dev/null
+    find $PWD -type d,f -empty | xargs rm -rf
 
+    echo "Moving files to scranton"
     if [ -d $HOME/../scantron/autoforklift/ingest/ ]; then
         for i in `ls | grep -i "\.xml"`; do
             if [ `tail -n 1 $i | cut -d "(" -f 2 | cut -d ")" -f 1 | cut -d " " -f 1` -gt 0 ]; then
@@ -144,7 +147,6 @@ function cleanup
             fi
         done
     fi
-    find $PWD -type d,f -empty | xargs rm -rf
     XZ_OPT=-e9 tar -cvJf $PWD/../$projectName.tar.xz $PWD/
     mv $PWD/../$outputFile.tar.xz $PWD/
 }
